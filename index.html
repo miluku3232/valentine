@@ -2,52 +2,119 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Will you be my Valentine?</title>
     <style>
         body {
             background-color: #ffe4e1;
             text-align: center;
             font-family: sans-serif;
-            padding-top: 100px;
+            padding-top: 80px;
+            overflow: hidden; /* 画面外に飛び出してもスクロールさせない */
+        }
+        h1 {
+            color: #d1547a;
+            font-size: 24px;
+            margin-bottom: 20px;
+            padding: 0 20px;
+            transition: all 0.3s;
         }
         .btn-container {
             position: relative;
-            height: 200px;
+            height: 300px;
+            margin-top: 50px;
         }
         button {
-            font-size: 24px;
-            padding: 10px 30px;
-            margin: 20px;
+            font-size: 20px;
+            padding: 12px 24px;
             border: none;
-            border-radius: 10px;
+            border-radius: 50px;
             cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        #yesBtn { background-color: #ff69b4; color: white; }
+        #yesBtn {
+            background-color: #ff69b4;
+            color: white;
+            transition: transform 0.2s ease; /* 大きくなる時になめらかにする */
+        }
         #noBtn {
-            background-color: #a9a9a9; color: white;
-            position: absolute; /* 位置を自由に変えられるようにする */
-            left: 55%;
+            background-color: #a9a9a9;
+            color: white;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.1s ease;
         }
     </style>
 </head>
 <body>
 
-    <h1>一緒に過ごしてくれますか？ 💕</h1>
+    <h1 id="message">デートしよ？ </h1>
     
     <div class="btn-container">
-        <button id="yesBtn" onclick="alert('ありがとう！嬉しいです！')">Yes</button>
-        <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">No</button>
+        <button id="yesBtn" onclick="celebrate()">Yes</button>
+        <button id="noBtn" ontouchstart="moveButton(event)" onclick="moveButton(event)">No</button>
     </div>
 
     <script>
-        function moveButton() {
+        let noCount = 0;
+        let yesScale = 1;
+
+        // Noの時のセリフ
+        const replies = [
+            "本当？ ",
+            "お願いです🥺",
+            "もう一回考えて？",
+            "後悔しない？ ",
+            "Yesって言って！！😡"
+        ];
+
+        function moveButton(event) {
+            // ズームしない
+            event.preventDefault();
+
             const noBtn = document.getElementById('noBtn');
-            // 画面内のランダムな位置にボタンを移動させる
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            const yesBtn = document.getElementById('yesBtn');
+            const message = document.getElementById('message');
+
+            // リストのセリフをループ
+            if (noCount < replies.length) {
+                message.innerHTML = replies[noCount];
+            } else {
+                message.innerHTML = "もうYesしか受け付けません！ 😤";
+            }
+
+            // Yesボタンを大きくする（1.3倍）
+            yesScale += 0.3;
+            yesBtn.style.transform = `scale(${yesScale})`;
+
+            // Noボタンをスマホの画面内でランダムに移動
+            const padding = 60; 
+            const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+            const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+            const randomX = Math.random() * (maxX - padding) + padding;
+            const randomY = Math.random() * (maxY - padding) + padding;
+
+            noBtn.style.position = 'fixed'; // 画面全体を基準に動かす
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+            noBtn.style.transform = 'none'; // 中央寄せ解除
+
+            noCount++;
+        }
+
+        // Yesを押したときの演出
+        function celebrate() {
+            const message = document.getElementById('message');
+            message.innerHTML = "やった！デートしましょー☺";
             
-            noBtn.style.left = x + 'px';
-            noBtn.style.top = y + 'px';
+            // Noボタンを消す
+            document.getElementById('noBtn').style.display = 'none';
+            // Yesのサイズを元に戻す
+            document.getElementById('yesBtn').style.transform = 'scale(1.5)';
         }
     </script>
 </body>
