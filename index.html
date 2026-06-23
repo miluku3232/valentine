@@ -2,50 +2,75 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>デートのお伺い</title>
     <style>
+        :root {
+            --bg-color: #ffe4e1;
+            --primary-color: #d1547a;
+            --btn-yes: #ff69b4;
+            --btn-no: #a9a9a9;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            background-color: #ffe4e1;
+            background-color: var(--bg-color);
             text-align: center;
             font-family: sans-serif;
-            padding-top: 80px;
-            overflow: hidden; /* スクロールさせない */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            padding: 20px;
         }
+
         h1 {
-            color: #d1547a;
-            font-size: 24px;
-            margin-bottom: 20px;
-            padding: 0 20px;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            min-height: 3rem; /* テキスト変更時のガタつき防止 */
             transition: all 0.3s;
         }
+
         .btn-container {
             position: relative;
+            width: 100%;
+            max-width: 400px;
             height: 300px;
-            margin-top: 50px;
         }
+
         button {
-            font-size: 20px;
-            padding: 12px 24px;
+            font-size: 1.25rem;
+            padding: 0.75rem 1.5rem;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+
         #yesBtn {
-            background-color: #ff69b4;
+            background-color: var(--btn-yes);
             color: white;
-            transition: transform 0.2s ease; /* なめらかに拡大 */
+            transition: all 0.2s ease;
         }
+
         #noBtn {
-            background-color: #a9a9a9;
+            background-color: var(--btn-no);
             color: white;
             position: absolute;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            transition: all 0.1s ease;
+            transition: left 0.1s ease, top 0.1s ease;
+            z-index: 10;
         }
     </style>
 </head>
@@ -54,68 +79,75 @@
     <h1 id="message">朝まで飲みに行こう？ </h1>
     
     <div class="btn-container">
-        <button id="yesBtn" onclick="celebrate()">Yes</button>
-        <button id="noBtn" ontouchstart="moveButton(event)" onclick="moveButton(event)">No</button>
+        <button id="yesBtn">Yes</button>
+        <button id="noBtn">No</button>
     </div>
 
     <script>
-        let noCount = 0;
-        let yesScale = 1;
+        // 即時関数（IIFE）で囲んで変数をカプセル化（安全対策）
+        (() => {
+            let noCount = 0;
+            let yesPadding = 1.5; // rem
+            let yesFontSize = 1.25; // rem
 
-        // Noの時のセリフ
-        const replies = [
-            "嘘やんね？ ",
-            "お願いです🥺",
-            "もう一回考えて？",
-            "後悔しない？ ",
-            "Yesって言って！！😡"
-        ];
+            const replies = [
+                "嘘やんね？ ",
+                "お願いです🥺",
+                "もう一回考えて？",
+                "後悔しない？ ",
+                "Yesって言って！！😡"
+            ];
 
-        function moveButton(event) {
-            // ズームしない
-            event.preventDefault();
-
-            const noBtn = document.getElementById('noBtn');
             const yesBtn = document.getElementById('yesBtn');
+            const noBtn = document.getElementById('noBtn');
             const message = document.getElementById('message');
 
-            // セリフをループ
-            if (noCount < replies.length) {
-                message.innerHTML = replies[noCount];
-            } else {
-                message.innerHTML = "もうYesしか受け付けません！ 😤";
-            }
+            const moveButton = (e) => {
+                e.preventDefault();
 
-            // Yesボタン1.3倍
-            yesScale += 0.3;
-            yesBtn.style.transform = `scale(${yesScale})`;
+                // テキストの更新
+                if (noCount < replies.length) {
+                    message.innerHTML = replies[noCount];
+                } else {
+                    message.innerHTML = "もうYesしか受け付けません！ 😤";
+                }
 
-            // Noボタンをランダムに移動
-            const padding = 60; 
-            const maxX = window.innerWidth - noBtn.offsetWidth - padding;
-            const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+                // Yesボタンを「きれいに」大きくする（文字がボケない）
+                yesPadding += 0.5;
+                yesFontSize += 0.1;
+                yesBtn.style.padding = `${yesPadding * 0.5}rem ${yesPadding}rem`;
+                yesBtn.style.fontSize = `${yesFontSize}rem`;
 
-            const randomX = Math.random() * (maxX - padding) + padding;
-            const randomY = Math.random() * (maxY - padding) + padding;
+                // 画面サイズをその都度安全に取得（ツールバー対策）
+                const padding = 50; 
+                const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+                const maxY = window.innerHeight - noBtn.offsetHeight - padding;
 
-            noBtn.style.position = 'fixed'; // 画面全体を基準に動かす
-            noBtn.style.left = randomX + 'px';
-            noBtn.style.top = randomY + 'px';
-            noBtn.style.transform = 'none'; // 中央寄せ解除
+                // 負の数にならないよう制御
+                const randomX = Math.max(padding, Math.random() * (maxX - padding) + padding);
+                const randomY = Math.max(padding, Math.random() * (maxY - padding) + padding);
 
-            noCount++;
-        }
+                noBtn.style.position = 'fixed'; 
+                noBtn.style.left = `${randomX}px`;
+                noBtn.style.top = `${randomY}px`;
+                noBtn.style.transform = 'none'; 
 
-        // Yesの演出
-        function celebrate() {
-            const message = document.getElementById('message');
-            message.innerHTML = "やった！都合の良い日教えてください！いっぱいのも〜☺";
+                noCount++;
+            };
+
+            const celebrate = () => {
+                message.innerHTML = "やった！都合の良い日教えてください！いっぱいのも〜☺";
+                noBtn.style.display = 'none';
+                yesBtn.style.transform = 'scale(1.3)';
+            };
+
+            // イベントリスナーの集約
+            noBtn.addEventListener('touchstart', moveButton, { passive: false });
+            noBtn.addEventListener('mouseover', moveButton);
+            noBtn.addEventListener('click', moveButton);
             
-            // Noボタンを消す
-            document.getElementById('noBtn').style.display = 'none';
-            // Yesのサイズを元に戻す
-            document.getElementById('yesBtn').style.transform = 'scale(1.5)';
-        }
+            yesBtn.addEventListener('click', celebrate);
+        })();
     </script>
 </body>
 </html>
