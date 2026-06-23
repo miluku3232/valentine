@@ -1,29 +1,15 @@
 <!DOCTYPE html>
 <html lang="ja">
-    <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <!-- 1. ブラウザのタブに表示されるタイトル -->
-    <title>飲みに行こう？ </title>
+    <title>飲みに行こう？</title>
 
-    <!-- 2. SNSやLINEで共有した時に表示されるタイトルと説明文（ここが重要！） -->
     <meta property="og:title" content="お伺い">
     <meta property="og:description" content="朝まで飲みに行こう？">
     <meta property="og:type" content="website">
     
-    <!-- 💡 もし共有時に画像も表示させたい場合は、ここに画像のURLを入れます -->
-    <!-- <meta property="og:image" content="画像のURL"> -->
-
-    <style>
-        /* スタイルシートの中身（省略） */
-    </style>
-</head>
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>デートのお伺い</title>
     <style>
         :root {
             --bg-color: #ffe4e1;
@@ -104,11 +90,10 @@
     </div>
 
     <script>
-        // 即時関数（IIFE）で囲んで変数をカプセル化（安全対策）
         (() => {
             let noCount = 0;
-            let yesPadding = 1.5; // rem
-            let yesFontSize = 1.25; // rem
+            let yesPadding = 1.5; 
+            let yesFontSize = 1.25; 
 
             const replies = [
                 "嘘やんね？ ",
@@ -125,25 +110,21 @@
             const moveButton = (e) => {
                 e.preventDefault();
 
-                // テキストの更新
                 if (noCount < replies.length) {
                     message.innerHTML = replies[noCount];
                 } else {
                     message.innerHTML = "もうYesしか受け付けません！ 😤";
                 }
 
-                // Yesボタンを「きれいに」大きくする（文字がボケない）
                 yesPadding += 0.5;
                 yesFontSize += 0.1;
                 yesBtn.style.padding = `${yesPadding * 0.5}rem ${yesPadding}rem`;
                 yesBtn.style.fontSize = `${yesFontSize}rem`;
 
-                // 画面サイズをその都度安全に取得（ツールバー対策）
                 const padding = 50; 
                 const maxX = window.innerWidth - noBtn.offsetWidth - padding;
                 const maxY = window.innerHeight - noBtn.offsetHeight - padding;
 
-                // 負の数にならないよう制御
                 const randomX = Math.max(padding, Math.random() * (maxX - padding) + padding);
                 const randomY = Math.max(padding, Math.random() * (maxY - padding) + padding);
 
@@ -161,7 +142,6 @@
                 yesBtn.style.transform = 'scale(1.3)';
             };
 
-            // イベントリスナーの集約
             noBtn.addEventListener('touchstart', moveButton, { passive: false });
             noBtn.addEventListener('mouseover', moveButton);
             noBtn.addEventListener('click', moveButton);
