@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Will you be my Valentine?</title>
+    <style>
+        body {
+            background-color: #ffe4e1;
+            text-align: center;
+            font-family: sans-serif;
+            padding-top: 100px;
+        }
+        .btn-container {
+            position: relative;
+            height: 200px;
+        }
+        button {
+            font-size: 24px;
+            padding: 10px 30px;
+            margin: 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        #yesBtn { background-color: #ff69b4; color: white; }
+        #noBtn {
+            background-color: #a9a9a9; color: white;
+            position: absolute; /* 位置を自由に変えられるようにする */
+            left: 55%;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>一緒に過ごしてくれますか？ 💕</h1>
+    
+    <div class="btn-container">
+        <button id="yesBtn" onclick="alert('ありがとう！嬉しいです！')">Yes</button>
+        <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">No</button>
+    </div>
+
+    <script>
+        function moveButton() {
+            const noBtn = document.getElementById('noBtn');
+            // 画面内のランダムな位置にボタンを移動させる
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+        }
+    </script>
+</body>
+</html>
