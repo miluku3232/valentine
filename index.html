@@ -10,7 +10,7 @@
             text-align: center;
             font-family: sans-serif;
             padding-top: 80px;
-            overflow: hidden; /* 画面外に飛び出してもスクロールさせない */
+            overflow: hidden; /* スクロールさせない */
         }
         h1 {
             color: #d1547a;
@@ -36,7 +36,7 @@
         #yesBtn {
             background-color: #ff69b4;
             color: white;
-            transition: transform 0.2s ease; /* 大きくなる時になめらかにする */
+            transition: transform 0.2s ease; /* なめらかに拡大 */
         }
         #noBtn {
             background-color: #a9a9a9;
@@ -51,7 +51,7 @@
 </head>
 <body>
 
-    <h1 id="message">デートしよ？ </h1>
+    <h1 id="message">朝まで飲みに行こう？ </h1>
     
     <div class="btn-container">
         <button id="yesBtn" onclick="celebrate()">Yes</button>
@@ -64,7 +64,7 @@
 
         // Noの時のセリフ
         const replies = [
-            "本当？ ",
+            "嘘やんね？ ",
             "お願いです🥺",
             "もう一回考えて？",
             "後悔しない？ ",
@@ -79,18 +79,18 @@
             const yesBtn = document.getElementById('yesBtn');
             const message = document.getElementById('message');
 
-            // リストのセリフをループ
+            // セリフをループ
             if (noCount < replies.length) {
                 message.innerHTML = replies[noCount];
             } else {
                 message.innerHTML = "もうYesしか受け付けません！ 😤";
             }
 
-            // Yesボタンを大きくする（1.3倍）
+            // Yesボタン1.3倍
             yesScale += 0.3;
             yesBtn.style.transform = `scale(${yesScale})`;
 
-            // Noボタンをスマホの画面内でランダムに移動
+            // Noボタンをランダムに移動
             const padding = 60; 
             const maxX = window.innerWidth - noBtn.offsetWidth - padding;
             const maxY = window.innerHeight - noBtn.offsetHeight - padding;
@@ -106,10 +106,10 @@
             noCount++;
         }
 
-        // Yesを押したときの演出
+        // Yesの演出
         function celebrate() {
             const message = document.getElementById('message');
-            message.innerHTML = "やった！デートしましょー☺";
+            message.innerHTML = "やった！いっぱいのもー☺";
             
             // Noボタンを消す
             document.getElementById('noBtn').style.display = 'none';
